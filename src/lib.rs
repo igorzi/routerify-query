@@ -52,7 +52,8 @@
 //! ```
 //!
 
-use hyper::{body::HttpBody, Request};
+use http_body::Body;
+use hyper::Request;
 use routerify::Middleware;
 use std::collections::HashMap;
 use url::form_urlencoded;
@@ -99,16 +100,20 @@ pub(crate) struct Query(pub HashMap<String, String>);
 /// }
 /// # run();
 /// ```
-pub fn query_parser<B, E>() -> Middleware<B, E>
+pub fn query_parser<RequestBody, ResponseBody, E>() -> Middleware<RequestBody, ResponseBody, E>
 where
-    B: HttpBody + Send + Sync + Unpin + 'static,
+    RequestBody: Body + Send + Sync + Unpin + 'static,
+    ResponseBody: Body + Send + Sync + Unpin + 'static,
     E: std::error::Error + Send + Sync + Unpin + 'static,
 {
-    Middleware::pre(query_parser_middleware_handler::<E>)
+    Middleware::pre(query_parser_middleware_handler::<RequestBody, E>)
 }
 
-async fn query_parser_middleware_handler<E>(mut req: Request<hyper::Body>) -> Result<Request<hyper::Body>, E>
+async fn query_parser_middleware_handler<RequestBody, E>(
+    mut req: Request<RequestBody>,
+) -> Result<Request<RequestBody>, E>
 where
+    RequestBody: Body + Send + Sync + Unpin + 'static,
     E: std::error::Error + Send + Sync + Unpin + 'static,
 {
     let mut q = Query(HashMap::new());

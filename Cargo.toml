@@ -1,6 +1,6 @@
 [package]
 name = "routerify-query"
-version = "3.0.0"
+version = "4.0.0"
 description = "A Routerify middleware which parses the request query string."
 homepage = "https://github.com/routerify/routerify-query"
 repository = "https://github.com/routerify/routerify-query"
@@ -12,9 +12,15 @@ license = "MIT"
 edition = "2018"
 
 [dependencies]
-routerify = "3"
-hyper = "0.14"
+bytes = "1"
+routerify = "4"
+hyper = { version = "1.0.0-rc.3", features = ["http1", "http2", "server", "client"] }
+http-body = "=1.0.0-rc.2"
+http-body-util = { version = "=0.1.0-rc.2" }
 url = "2.2"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
+
+[patch.crates-io]
+routerify = { git = "https://github.com/igorzi/routerify", rev = "11b4186fdfe412c5e4f75786022a4b164d3af446" }

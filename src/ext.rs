@@ -80,7 +80,7 @@ pub trait RequestQueryExt {
     fn query<P: Into<String>>(&self, query_name: P) -> Option<&String>;
 }
 
-impl RequestQueryExt for Request<hyper::Body> {
+impl<B: http_body::Body> RequestQueryExt for Request<B> {
     fn queries(&self) -> &HashMap<String, String> {
         self.extensions()
             .get::<Query>()
